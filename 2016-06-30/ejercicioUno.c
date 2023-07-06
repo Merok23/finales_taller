@@ -31,6 +31,6 @@ void translateToHexa(const char* fileName) {
 }
 
 int main(int argc, char** argv) {
-    translateToHexa("archivo.txt");
+    translateToHexa("ejercicioUno.txt");
     return 0;
 }

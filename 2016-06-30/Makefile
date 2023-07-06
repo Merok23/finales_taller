@@ -9,10 +9,10 @@ TARGET_DIR := target
 # Source files
 SOURCES := $(wildcard *.cpp *.c)
 OBJECTS := $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(patsubst %.c,$(OBJ_DIR)/%.o,$(SOURCES)))
-TARGET := $(TARGET_DIR)/program
+TARGETS := $(patsubst %.cpp,$(TARGET_DIR)/%,$(patsubst %.c,$(TARGET_DIR)/%,$(SOURCES)))
 
 # Main target
-all: $(TARGET)
+all: $(TARGETS)
 
 # Rule to create object files
 $(OBJ_DIR)/%.o: %.cpp
@@ -23,10 +23,10 @@ $(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Rule to link object files and create the final target
-$(TARGET): $(OBJECTS)
+# Rule to link object files and create the final targets
+$(TARGET_DIR)/%: $(OBJ_DIR)/%.o
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS) $< -o $@
 
 # Clean build artifacts
 clean:
