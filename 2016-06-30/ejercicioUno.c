@@ -26,7 +26,8 @@ void translateToHexa(const char* fileName) {
         read = fscanf(file, "%5d", &number);
         offsetLectura += 6;
     }
-    truncate(fileName, offsetEscritura);
+    int error = truncate(fileName, offsetEscritura);
+    if (error == -1) perror("F");
     fclose(file);
 }
 
