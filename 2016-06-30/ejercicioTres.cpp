@@ -16,7 +16,7 @@ bool ended(char* buffer) {
 
 int main(int argc, char** argv) {
     //Suponiendo que me pasan un puerto por argv:
-    if (argc != 2) return;
+    if (argc != 2) return 1;
     char* port = argv[1];
     //struct que nos llena addrinfo
     struct addrinfo hints;
@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     int file_descriptor = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
     //bindeamos el socket para aceptar conecciones:
     error = bind(file_descriptor, result->ai_addr, result->ai_addrlen);
-    if (error == -1) return;
+    if (error == -1) return 1;
     error = listen(file_descriptor, 5);
     int recieving_socket = accept(file_descriptor, nullptr, nullptr);
     bool finished = false;
