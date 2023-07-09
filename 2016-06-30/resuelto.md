@@ -44,7 +44,7 @@ Cambiando el valor de DEBUG_MODE, se va a compilar lo que este entre #if y #endi
 ## 3. Escriba un pequeño programa que implemente un servidor TCP. El mismo debe recibir paquetes de datos de 8 bytes e imprimirlos en formato Hexadecimal (un paquete por renglón). El servidor debe cerrarse al recibir un paquete de 8 bytes 00h.
 
 ```c
-//'\0' == 0000 = 0 (para mi)
+//asumo que el byte 0 == '\0'
 bool ended(char* buffer) {
     for (int i = 0; i < 8; i++) if (buffer[i] != '\0') return false;
     return true;
@@ -74,10 +74,14 @@ int main(int argc, char** argv) {
     size_t recieved;
     while (!finished) {
         recieved = 0;
-        while(recieved < 8) recieved = recv(recieving_socket, buffer + recieved, 8, 0);
+        while(recieved < 8) {
+            recieved = recv(recieving_socket, buffer + recieved, 8, 0);
+            if (recieved == -1 ) return 1; //aca se liberarian recursos
+        }
         if (ended(buffer)) finished = true;
         printf("Recieved: %s", buffer);
     }
+    freeaddrinfo(result);
     return 0;
 }
 ```
@@ -92,3 +96,108 @@ heap: Las variables que se encuentran en memoria dinamica, es decir, memoria man
 stack: Todas las variables dentro de funciones, que dejan de existir una vez se termina la funcion en la que estan. (se van de su scope)
 
 ## 6. Escriba una rutina (para ambiente gráfico Windows o Linux) que dibuje, en color azul, un óvalo que ocupe toda la pantalla.
+handleEvents es solo para cerrar la ventana, lo importante esta en main.
+```c
+#define WIDTH 1366
+#define HEIGHT 768
+
+bool handleEvents() {
+    SDL_Event e;
+    while(SDL_PollEvent(&e)) {
+        switch(e.type) {
+            case SDL_QUIT:
+                return true;
+        }
+    }
+    return false;
+}
+
+int main (int argc, char** argv) {
+    SDL2pp::SDL sdl(SDL_INIT_VIDEO);
+    SDL2pp::Window mainWindow("ovalo", 0, 0, WIDTH, HEIGHT, SDL_WINDOW_RESIZABLE);
+    SDL2pp::Renderer renderer(mainWindow, -1, SDL_RENDERER_ACCELERATED);
+    bool closed = false;
+    while(!closed) {
+        closed = handleEvents();
+        renderer.SetDrawColor(0xff, 0xff, 0xff);
+        renderer.Clear();
+        //renderer position_x, position_y, radius_x, radius_y, red, green, blue, alpha
+        filledEllipseRGBA(renderer.Get(), WIDTH/2, HEIGHT/2, WIDTH/2, HEIGHT/2, 0, 0, 255, 255);
+        renderer.Present();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000 / 30));
+    }
+    return 0;
+}
+```
+
+## 7. ¿Qué son las funciones virtuales? ¿Para qué sirven? De un breve ejemplo de su uso.
+
+Las funciones virtuales son funciones que uno puede redefinir en las clases hijas, aunque no es necesario hacerlo. Es decir, la funcion puede tener un comportamiento genérico por default, pero si se necesita que se haga otra cosa, mediante "override" se puede redefinir. Clasico ejemplo de los animales:
+```C++
+class perro {
+    pubic:
+        virtual void communicate() {
+            std::cout << "Guau" << std::endl;
+        }
+
+}
+
+class chihuaha : public perro {
+    public:
+    virtual void communicate() override {
+        std::cout << "Guau agudo" << std::endl;
+    }
+}
+```
+
+## 8. Declare una clase LongChar para encapsular un carácter en un campo de 16 bits. Incluya al menos: Constructor default, con char y Constructor de Copia; Operador <, ==, =, int y >>. Implemente el operador >>.
+
+```C++
+class LongChar {
+    private:
+        char myChar[2];
+    public:
+        LongChar();
+        LongChar(const char &c);
+        bool operator<(const LongChar &other) const;
+        bool operator==(const LongChar &other) const;
+        LongChar& operator=(const LongChar &other);
+        operator int() const;
+        void setLongChar(const char* longChar) {
+            memcpy(this->myChar, longChar, 2);
+        }
+};
+
+std::istream& operator>>(std::istream& in, LongChar& c) {
+    char newLong[2];
+    in >> newLong[0];
+    in >> newLong[1];
+    c.setLongChar(newLong);
+    return in;
+}
+```
+
+## 9. ¿Qué función utiliza para lanzar un thread? Explique su uso mediante un ejemplo sencillo.
+
+La función que se utiliza para lanzar un thread en C++ es std::thread(void*, void* args), donde el primer parametro es la función que se quiere utilizar, y los parametros que siguen son los parametros de esa función, por ejemplo, si queremos sumar todos los elementos de un array, podemos hacer lo siguiente:
+```C++
+void sumarElementos(const int* vector, const int &inicio, const int &largo, int &resultado){
+    for (int i = inicio; i < largo; i++) resultado += vector[i];
+}
+
+int main(int argc, char** argv) {
+    int superVector[10000]; // assuming the array is filled with numbers worth summing
+    int resultado1 = 0;
+    int resultado2 = 0;
+    std::thread t1(sumarElementos, std::cref(superVector), 0, 5000, std::ref(resultado1));
+    std::thread t2(sumarElementos, std::cref(superVector), 5000, 10000, std::ref(resultado2));
+    t1.join();
+    t2.join();
+    std::cout << "El resultado es: " << resultado1 + resultado2 << std::endl;
+    return 0;
+}
+```
+
+## 10. Imagine que tiene que diseñar un protocolo de comunicaciones entre dos procesos que intercambiarán paquetes de datos. ¿Qué alternativas puede imaginar para implementar el concepto de paquete (para que el receptor determine cuando termina un paquete e inicia el siguiente)?
+
+Se pueden usar varios metodos, por ejemplo, se puede enviar la longitud del paquete al principio de cada paquete, tener un largo predefinido para todos los paquetes, o enviar un valor especifico que se acordo que es el final de un paquete. 

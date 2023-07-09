@@ -10,6 +10,8 @@ set(CMAKE_BUILD_TYPE Release)
 file(GLOB EJ_UNO ejercicioUno.c)
 file(GLOB EJ_TRES ejercicioTres.cpp)
 file(GLOB EJ_SEIS ejercicioSeis.cpp)
+file(GLOB EJ_NUEVE ejercicioNueve.cpp)
+
 
 # Find SDL2 packages
 find_package(SDL2 REQUIRED)
@@ -17,12 +19,25 @@ find_package(SDL2 REQUIRED)
 # Include SDL2 headers
 include_directories(${SDL2_INCLUDE_DIRS})
 
+# Find SDL2pp package
+find_package(SDL2pp REQUIRED)
+
+# Include SDL2pp headers
+include_directories(${SDL2PP_INCLUDE_DIRS})
+
 # binaries
 add_executable(ejercicioUno ${EJ_UNO})
 add_executable(ejercicioTres ${EJ_TRES})
 add_executable(ejercicioSeis ${EJ_SEIS})
+add_executable(ejercicioNueve ${EJ_NUEVE})
 
-# Link SDL2 libraries
+target_link_libraries(ejercicioNueve
+    pthread
+)
+
+# Link SDL2 and SDL2pp libraries
 target_link_libraries(ejercicioSeis
+    SDL2pp
+    SDL2_gfx
     ${SDL2_LIBRARIES}
 )

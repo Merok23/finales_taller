@@ -38,9 +38,13 @@ int main(int argc, char** argv) {
     size_t recieved;
     while (!finished) {
         recieved = 0;
-        while(recieved < 8) recieved = recv(recieving_socket, buffer + recieved, 8, 0);
+        while(recieved < 8) {
+            recieved = recv(recieving_socket, buffer + recieved, 8, 0);
+            if (recieved == -1 ) return 1; //aca se liberarian recursos
+        }
         if (ended(buffer)) finished = true;
         printf("Recieved: %s", buffer);
     }
+    freeaddrinfo(result);
     return 0;
 }
