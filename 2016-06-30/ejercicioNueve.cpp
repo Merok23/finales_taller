@@ -6,7 +6,7 @@ void sumarElementos(const int* vector, const int &inicio, const int &largo, int 
 }
 
 int main(int argc, char** argv) {
-    int superVector[10000]; // assuming the array is filled with numbers worth summing
+    int superVector[10000]; // asumiendo que el array tiene valores que vale la pena sumar
     int resultado1 = 0;
     int resultado2 = 0;
     std::thread t1(sumarElementos, std::cref(superVector), 0, 5000, std::ref(resultado1));
