@@ -90,10 +90,10 @@ int main(int argc, char** argv) {
 El modificador const en los parametros y variables en C++ significa que el parametro o variable es constante y no se debería modificar el varlo de dicha variable. En la practica para lograr esto, lo que se hace es que el compilador checkea al momento de compilar si se esta modificando esa varible, si es asi, tira un error de compilación. Mas que nada suele ser una herramienta que sirve para evitar errores humanos, y suele ser buena practica que si se sabe que un parametro o variable deberia ser constante, ponerle el modificador const.
 
 ## 5. Describa qué tipos de variables y atributos de clases se guardan en los diferentes areas de memoria (stack, data segment, heap, code segment).
-code: Las variables globales, normalmente con el modificador extern.
-data: Las variables estaticas, que viven dentro de un archivo y pueden ser referenciadas desde cualquier lugar de ese archivo (y mantienen su valor a lo largo de la ejecución).
-heap: Las variables que se encuentran en memoria dinamica, es decir, memoria manejada por el programador. Suele ser adquirida con malloc o new en C/C++, y deben ser liberadas por el programador.
-stack: Todas las variables dentro de funciones, que dejan de existir una vez se termina la funcion en la que estan. (se van de su scope)
+- code: Las variables globales, normalmente con el modificador extern.
+- data: Las variables estaticas, que viven dentro de un archivo y pueden ser referenciadas desde cualquier lugar de ese archivo (y mantienen su valor a lo largo de la ejecución).
+- heap: Las variables que se encuentran en memoria dinamica, es decir, memoria manejada por el programador. Suele ser adquirida con malloc o new en C/C++, y deben ser liberadas por el programador.
+- stack: Todas las variables dentro de funciones, que dejan de existir una vez se termina la funcion en la que estan. (se van de su scope)
 
 ## 6. Escriba una rutina (para ambiente gráfico Windows o Linux) que dibuje, en color azul, un óvalo que ocupe toda la pantalla.
 handleEvents es solo para cerrar la ventana, lo importante esta en main.
