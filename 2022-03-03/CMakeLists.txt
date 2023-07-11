@@ -10,6 +10,8 @@ set(CMAKE_BUILD_TYPE Release)
 file(GLOB EJ_UNO desplazarContenido.c)
 file(GLOB EJ_TRES ejercicioDeadLock.cpp)
 file(GLOB EJ_SEIS envioHastaFin.cpp)
+file(GLOB EJ_ROMBO romboAmarillo.cpp)
+
 
 # Find SDL2 packages
 find_package(SDL2 REQUIRED)
@@ -27,14 +29,15 @@ include_directories(${SDL2PP_INCLUDE_DIRS})
 add_executable(desplazarContenido ${EJ_UNO})
 add_executable(ejercicioDeadLock ${EJ_TRES})
 add_executable(envioHastaFin ${EJ_SEIS})
+add_executable(rombo ${EJ_ROMBO})
 
 target_link_libraries(ejercicioDeadLock
     pthread
 )
 
 # Link SDL2 and SDL2pp libraries
-#target_link_libraries(ejercicioSeis
-#    SDL2pp
-#    SDL2_gfx
-#    ${SDL2_LIBRARIES}
-#)
+target_link_libraries(rombo
+    SDL2pp
+    SDL2_gfx
+    ${SDL2_LIBRARIES}
+)
