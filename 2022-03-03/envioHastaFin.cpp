@@ -29,6 +29,12 @@ int main (int argc, char** argv) {
         freeaddrinfo(result);
         return 1;
     }
+    error = connect(sfd, result->ai_addr, result->ai_addrlen);
+    if (error == -1) {
+        freeaddrinfo(result);
+        close(sfd);
+        return 1;
+    }
     bool finished = false;
     size_t size_read = 0;
     size_t size_sent = 0;
@@ -51,4 +57,5 @@ int main (int argc, char** argv) {
     freeaddrinfo(result);
     shutdown(sfd, SHUT_RDWR);    
     close(sfd);
+    return 0;
 }
