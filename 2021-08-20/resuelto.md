@@ -145,7 +145,7 @@ int reWriteFile(FILE* file, off_t offset) {
     int16_t number;
     off_t writeOffset = offset;
     off_t readOffset = offset + 2;
-    fseek(file, offset, SEEK_SET);
+    fseek(file, readOffset, SEEK_SET);
     int read = fread(&number, 2, 1, file);
     if(read == -1) return -1;
     readOffset += read;
@@ -166,20 +166,24 @@ int reWriteFile(FILE* file, off_t offset) {
 int eliminateInPlace(FILE* file) {
     int16_t number;
     size_t read = fread(&number, 2, 1, file);
+    if (read == -1) return -1;
     number = ntohs(number); //paso de big endian (network) a cualquiera que sea mi maquina.
-    off_t readOffset = 0;
+    off_t readOffset = read;
     off_t writeOffset = 0;
     while(read != EOF) {
         if (number % 7 == 0) {
             writeOffset = readOffset - 2;
             if (reWriteFile(file, writeOffset) < 0)
                 return -1;
+            readOffset -= 2; //saco 2 porque borre un elemento
         }
         fseek(file, readOffset, SEEK_SET);
         read = fread(&number, 2, 1, file);
         if(read == -1) return -1;
+        readOffset += read;
         number = ntohs(number);
     }
+    return 0;
 }
 
 
