@@ -57,6 +57,7 @@
         "stdio.h": "c",
         "socket.h": "c",
         "netdb.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "list": "cpp"
     }
 }

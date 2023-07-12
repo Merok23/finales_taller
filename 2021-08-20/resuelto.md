@@ -136,7 +136,7 @@ int main (int argc, char** argv) {
 
 ## 8. ¿Cómo se logra que 2 threads accedan (lectura/escritura) a un mismo recurso compartido sin que se generen problemas de consistencia? Ejemplifique.
 
-Con un mutex
+Con un mutex //ya hice varios ejemplos, mejor hago otras cosas.
 
 ## 9. Escribir un programa ISO C MULTIPLATAFORMA que procese el archivo “nros_2bytes_bigend.bin” sobre sí mismo, leyendo los nros (que están grabados en bigendian) y eliminando los número múltiplos de 7.
 
